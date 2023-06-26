@@ -63,8 +63,4 @@ can easily be deployed to kubernetes  cluster.
 # Issues
 
 *   cache proxy self HA.
-*
-
-
-
-
+*   If you authenticate to a private registry and pull through the proxy, those images will be served to any client that can reach the proxy, even without authentication. beware
