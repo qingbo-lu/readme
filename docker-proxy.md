@@ -48,7 +48,7 @@ can easily be deployed to kubernetes  cluster.
 
 ### Other way than config docker proxy.
 
-*   dns-hijack a special registry, (for example quay.io, dockerhub.com, change node resolver to kube-dns, adding a dns recored for registry on kube-dns）
+*   dns-hijack a special registry, (for example quay.io, dockerhub.com, change node resolver to kube-dns, adding a dns recored for registry on kube-dns);  can also add recores to  /etc/hosts.
 *   Add the caching server CA certificate to the list of system trusted roots.
 
 
