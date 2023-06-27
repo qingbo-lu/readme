@@ -25,6 +25,7 @@ can easily be deployed to kubernetes  cluster.
 
 
 # How to user proxy
+## Way 1:  config docker daemon to use proxy;
 
 *   [Configure Docker proxy](https://docs.docker.com/config/daemon/systemd/#httphttps-proxy) pointing to the caching server  (docker.service  Environment="HTTP\_PROXY=<http://127.0.0.1:3128/>" Environment="HTTPS\_PROXY=<http://127.0.0.1:3128/>")
 *   Add the caching server CA certificate to the list of system trusted roots.
@@ -45,8 +46,8 @@ can easily be deployed to kubernetes  cluster.
     systemctl restart docker.service
 
 
-
-### Other way than config docker proxy.
+## Way 2: overwrite dns recoreds for special registry.
+### Other way than config docker daemon.
 
 *   dns-hijack a special registry, (for example quay.io, dockerhub.com, change node resolver to kube-dns, adding a dns recored for registry on kube-dns);  can also add recores to  /etc/hosts.
 *   Add the caching server CA certificate to the list of system trusted roots.
@@ -74,16 +75,14 @@ can easily be deployed to kubernetes  cluster.
             loop
             reload
             loadbalance
-            hosts /etc/coredns/customdomains.db k8s.intra {
-              172.17.14.10 rancher.k8s.intra
-              172.17.14.10 hubble.k8s.intra
-              172.17.14.10 grafana.k8s.intra
-              172.17.14.10 alertmanager.k8s.intra
-              172.17.14.10 prometheus.k8s.intra
-              172.17.14.10 sso.k8s.intra
+            hosts /etc/coredns/customdomains.db io {
+              172.17.14.10 dockerhub.io
               fallthrough
             }
         }
+
+
+
 
 
 
