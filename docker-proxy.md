@@ -52,7 +52,9 @@ can easily be deployed to kubernetes  cluster.
 *   Add the caching server CA certificate to the list of system trusted roots.
 
 
-> apiVersion: v1
+>
+
+ apiVersion: v1
 kind: ConfigMap
 data:
   Corefile: |
