@@ -52,6 +52,39 @@ can easily be deployed to kubernetes  cluster.
 *   Add the caching server CA certificate to the list of system trusted roots.
 
 
+> apiVersion: v1
+kind: ConfigMap
+data:
+  Corefile: |
+    .:53 {
+        errors
+        health {
+          lameduck 5s
+        }
+        ready
+        kubernetes cluster.local in-addr.arpa ip6.arpa {
+          pods insecure
+          fallthrough in-addr.arpa ip6.arpa
+        }
+        prometheus :9153
+        forward . 8.8.8.8 8.8.4.4
+        cache 30
+        loop
+        reload
+        loadbalance
+        hosts /etc/coredns/customdomains.db k8s.intra {
+          172.17.14.10 rancher.k8s.intra
+          172.17.14.10 hubble.k8s.intra
+          172.17.14.10 grafana.k8s.intra
+          172.17.14.10 alertmanager.k8s.intra
+          172.17.14.10 prometheus.k8s.intra
+          172.17.14.10 sso.k8s.intra
+          fallthrough
+        }
+    }
+
+
+
 
 ## Ways to config kubernetes nodes.
 
