@@ -99,3 +99,50 @@ can easily be deployed to kubernetes  cluster.
 *   cache proxy self HA.
 *   If you authenticate to a private registry and pull through the proxy, those images will be served to any client that can reach the proxy, even without authentication. beware
 *   Location of the cache proxy, Within the same VPC on kubernetes cluster or should be deployed to Hongkong for aliyun?
+
+
+## Can use below daemonset to config k8s work node：
+```
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  namespace: kube-system
+  name: node-custom-setup
+  labels:
+    k8s-app: node-custom-setup
+  annotations:
+    command: &cmd apt-get update -qy && apt-get install -qy open-iscsi xfsprogs
+spec:
+  selector:
+    matchLabels:
+      k8s-app: node-custom-setup
+  template:
+    metadata:
+      labels:
+        k8s-app: node-custom-setup
+    spec:
+      hostNetwork: true
+      initContainers:
+      - name: init-node
+        command:
+          - nsenter
+          - --mount=/proc/1/ns/mnt
+          - --
+          - sh
+          - -c
+          - *cmd
+        image: alpine:3.7
+        securityContext:
+          privileged: true
+      hostPID: true
+      containers:
+      - name: wait
+        image: k8s.gcr.io/pause:3.1
+      hostPID: true
+      hostNetwork: true
+      tolerations:
+      - effect: NoSchedule
+        key: node-role.kubernetes.io/master
+  updateStrategy:
+    type: RollingUpdate
